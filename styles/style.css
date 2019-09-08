@@ -1,0 +1,89 @@
+.login-form , .registration-form{
+    /*border: 1px solid black;*/
+    background-color: rgba(197, 197, 197, 0.19);
+    border-radius: 100%;
+    width: 350px;
+    height: 350px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 90px;
+    margin: 0 auto;
+}
+.login-form{
+    margin-right: 0px;
+}
+.vertical-center {
+    min-height: 100%;
+    min-width: 100%;
+    display: flex;
+    align-items: center;
+}
+.registration-form{
+    width: 420px;
+    height:420px;
+    margin-left: 0px;
+    background-color: rgba(181, 181, 181, 0.27);
+}
+.password-group{
+    margin-top: 10px;
+}
+.username, .password{
+    background-color: rgba(0, 0, 0, 0.32);
+    border:  1px solid rgba(81, 81, 81, 0.65);
+    color: white;
+}
+.left-inner-addon {
+    position: relative;
+    display: flex;
+    color: whitesmoke;
+    margin: 0px auto;
+    line-height: inherit;
+}
+.left-inner-addon input {
+    padding-left: 37px;
+}
+.left-inner-addon i {
+    position: absolute;
+    padding: 10px 12px;
+    pointer-events: none;
+}
+h2 {
+    font: 60px/1.5 'Pacifico', Helvetica, sans-serif;
+    color: #efefef;
+    text-shadow: 3px 3px 0px rgba(0,0,0,0.1), 7px 7px 0px rgba(0,0,0,0.05);
+    display: block;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+.form-control:focus{
+    border-color: #8c8c8c;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(197, 197, 197, 0.6);
+}
+.glyphicon-arrow-right{
+    color: white;
+    font-size: 10px;
+}
+.submit-button{
+    width: 65px;
+    margin-top: 15px;
+}
+.register-text{
+    margin-top: 40px;;
+}
+.placeholder-color::-webkit-input-placeholder{
+    color: #a5a5a5;
+}
+.rg-user, .rg-pass{
+    border: none;
+    background-color: rgba(0, 0, 0, 0.38);
+}
+.rg-user-block{
+    margin-top: 21px;
+}
+.rg-user:focus, .rg-pass:focus{
+    border-color: #8c8c8c;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(255, 255, 255, 0.6);
+}
