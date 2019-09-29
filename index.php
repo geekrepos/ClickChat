@@ -179,35 +179,52 @@
                return false;
             }
             function submitRegister(){
+                var data = new FormData();
                 var uid   = $.trim($('#register-userid').val());
                 var pass  = $.trim($('#register-password').val());
                 var uname = $.trim($('#register-username').val());
-                var errorCodeArray = {ErrorCode0: "Username already exists.", ErrorCode1: "User Registered Successfullly.", ErrorCode2: "Please check if fields are empty!"};
-                var customURI = "register/index.php?uid="+uid+"&pass="+encodeURI(pass)+"&uname="+encodeURI(uname)+"&specialkey=true";
+                var uphoto =  $('[name= "user_image_file"]')[0].files[0];
+// debugger;
+                data.append('uid', uid);
+                data.append('pass', pass);
+                data.append('uname', uname);
+                data.append('specialkey', true);
+                if(uphoto!=null && uphoto!=undefined){
+                    data.append('uphoto', uphoto);
+                    var errorCodeArray = {ErrorCode0: "Username already exists.", ErrorCode1: "User Registered Successfullly.", ErrorCode2: "Please check if fields are empty!", ErrorCode3: "User profile created but photo upload was unsuccessful!"};
+                    console.log(data);
+                    var customURI = "register/index.php"
                 
-                if(!uid==''&&!pass==''&&!uname==''){
-                    console.log(customURI);
-                    $.ajax({
-                        type: "GET",
-                        url : customURI,
-                        success: function(response){
-                            console.log(response);
-                            if(errorCodeArray[response] === undefined){
-                                
+                    if(!uid==''&&!pass==''&&!uname==''){
+                        console.log(customURI);
+                        $.ajax({
+                            data: data,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            method: 'POST',
+                            type: 'POST', // For jQuery < 1.9
+                            url : customURI,
+                            success: function(response){
+                                console.log(response);
+                                if(errorCodeArray[response] === undefined){
+                                    
+                                }
+                                else{
+                                    alert(errorCodeArray[response]);
+                                }
+                                return false;
                             }
-                            else{
-                                alert(errorCodeArray[response]);
-                            }
-                            return false;
-                        }
-                    });
-                    return false;
+                        });
+                        return false;
+                    }
+                    else{
+                        alert(errorCodeArray.ErrorCode2);
+                        $("#reg-form").trigger("reset");
+                        return false;
+                    }
                 }
-                else{
-                    alert(errorCodeArray.ErrorCode2);
-                    $("#reg-form").trigger("reset");
-                    return false;
-                }
+                else{alert("Photo is a required field!");}
             }
         </script>
         
@@ -262,7 +279,40 @@
                        class="form-control form-group-lg password rg-pass placeholder-color"
                        placeholder="Password" />
             </div>
+            <style>
+            .inputfile + label {
+	cursor: pointer; /* "hand" cursor */
+}   
+            .inputfile {
+                line-height: 10px;
+                width: 0.1px;
+                height: 0.1px;
+                opacity: 0;
+                overflow: hidden;
+                position: absolute;
+                z-index: -1;
+            }
+            .inputfile + label {
+    /* font-size: 1.25em;
+    font-weight: 700; */
+    padding: 10px;
+    /* vertical-align: middle; */
+    width: 200px;
+    border-radius: 10px;
+    line-height: initial;
+    height: 10%;
+    background-color: #00000085;
+}
 
+.inputfile:focus + label,
+.inputfile + label:hover {
+    background-color: #00000025;
+}
+            </style>
+            <div class="left-inner-addon form-group password-group custom" style="display: block; margin-top: 10px">
+                <input type="file" name="user_image_file" id="file" class="inputfile" accept=".gif,.jpg,.jpeg,.png"/>
+                <label for="file">Select Photo</label>
+            </div>
             <div class="submit">
                 <a href="#">
                     <input type="submit"
