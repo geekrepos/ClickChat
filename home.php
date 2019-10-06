@@ -126,6 +126,12 @@
                     type: "GET",
                     url: customURI,
                     success: function(response){
+                        response = JSON.parse(response);
+                        lastLoginTime = response.lastLogin;
+                        isLogged = isUserLoggedIn(convertDate(lastLoginTime));
+                        $('#'+activeFriend.id+'_status')[0].style.background = isLogged?"radial-gradient("+ '#00ff00'+ ", transparent)":"radial-gradient("+ '#ff000f'+ ", transparent)";
+
+                        response = response.message;
                         //alert(response);
                         if(response.trim().length>0){
                             messages = response.split('/&MSG&/');
@@ -201,6 +207,24 @@
                 $('#'+activeFriend.id+'message_container').append(html);
                 $('.messages')[0].scrollTop = $('.messages')[0].scrollHeight;
             }
+            function convertDate(date) {
+                var sqlDateStr = date;
+                sqlDateStr = sqlDateStr.replace(/:| /g,"-");
+                var YMDhms = sqlDateStr.split("-");
+                var sqlDate = new Date();
+                sqlDate.setFullYear(parseInt(YMDhms[0]), parseInt(YMDhms[1])-1,
+                    parseInt(YMDhms[2]));
+                sqlDate.setHours(parseInt(YMDhms[3]), parseInt(YMDhms[4]),
+                    parseInt(YMDhms[5]), 0/*msValue*/);
+                return sqlDate;
+            }
+            function isUserLoggedIn(lastLogged) {
+                date = new Date();
+                // debugger;
+                return date.getHours()-lastLogged.getHours()>0?
+                    false:date.getMinutes()-lastLogged.getMinutes()>0?
+                        false:date.getSeconds() - lastLogged.getSeconds() < 30;
+            }
             function updateFriendList(){
                 var myfriends, i =0;
                 var friendList = $('#message-list');
@@ -210,30 +234,53 @@
                     type : "GET",
                     url : customURI,
                     success : function (response) {
-                        if(response!="false"){
-                            myfriends = response.split('/&FRD&/');
-                            console.log(myfriends);
-                            myfriends.pop();
-                            if(friendList[0].childElementCount>0) {
-                                for (i = 0; i<myfriends.length; i++) {
-                                    friend = myfriends[i];
-                                    friend = friend.split('/&INFO&/');
-                                    friend.pop();
-                                    if (friendList.children().last().children().attr("id") == friend[0]) {
-                                        ++i;
-                                        break;
+                        response = JSON.parse(response);
+                        if(!response.error){
+                            // myfriends = response.split('/&FRD&/');
+                            // debugger;
+                            // console.log(myfriends);
+                            // myfriends.pop();
+                            friends = response.friends;
+
+                            // if(friendList[0].childElementCount>0) {
+                            //     for (i = 0; i<friends.length; i++) {
+                            //         friend = friends[i];
+                            //         if (friendList.children().last().children().attr("id") == friend[0]) {
+                            //             ++i;
+                            //             break;
+                            //         }
+                            //     }
+                            // }
+                            if(friends.length){
+                                friends.map(function (friend, index) {
+                                    temp = friendList[0].childElementCount?friendList[0].children[index].children[0]:null;
+                                    bool = temp?temp.getAttribute('id'):temp;
+                                    isLoggedIn = isUserLoggedIn(convertDate(friend.lastUpdatedTime));
+                                    if(bool!==friend['userid']){
+                                        var html = "<a isOnline=false onclick='selectFriend(this)'><div class='user vertical-center' id="+friend['userid']+"><div class='user-image'><img style='max-width: inherit; max-height: inherit; width: inherit; height: inherit' src=uploads/photos/"+friend['photo_path']+" ></div><span class='user-name'>"+friend['username']+"</span>" +
+                                            "<span id="+friend.userid+"_status style='position: relative; margin-left: 75px; width: 10px;height: 10px;border-radius: 100px;'></span>"+
+                                            "</div></a>";
+                                        html = ($(html)[0]);
+                                        // html[0].setAttribute('isOnline', isLoggedIn);
+                                        html.children[0].children[2].style.background = isLoggedIn?"radial-gradient("+ '#00ff00'+ ", transparent)":"radial-gradient("+'#ff0000'+", transparent)";
+                                        friendList.append(html);
+                                        html = "<div id="+friend['userid']+"message_container></div>";
+                                        $('.private-messages').append(html)
                                     }
-                                }
-                            }
-                            if(myfriends.length){
-                                for (i; i<myfriends.length; i++) {
-                                    friend = myfriends[i];
-                                    friend = friend.split('/&INFO&/');
-                                    var html = "<a onclick='selectFriend(this)'><div class='user vertical-center' id="+friend[0]+"><div class='user-image'><img style='max-width: inherit; max-height: inherit; width: inherit; height: inherit' src="+friend[2]+" ></div><span class='user-name'>"+friend[1]+"</span></div></a>";
-                                    friendList.append(html);
-                                    html = "<div id="+friend[0]+"message_container></div>";
-                                    $('.private-messages').append(html);
-                                }
+                                    // debugger;
+                                })
+                                // for (i; i<myfriends.length; i++) {
+                                //     // friend = myfriends[i];
+                                //     // friend = friend.split('/&INFO&/');
+                                //     // var html = "<a onclick='selectFriend(this)'><div class='user vertical-center' id="+friend[0]+"><div class='user-image'><img style='max-width: inherit; max-height: inherit; width: inherit; height: inherit' src="+friend[2]+" ></div><span class='user-name'>"+friend[1]+"</span>" +
+                                //     //     "<span style='position: relative; margin-left: 75px; width: 10px;height: 10px;border-radius: 100px;'></span>"+
+                                //     //     "</div></a>";
+                                //     // html = ($(html)[0]);
+                                //     // html.children[0].children[2].style.background = friend.online?"radial-gradient("+ '#00ff00'+ ", transparent)":"radial-gradient("+'#ff0000'+", transparent)";
+                                //     // friendList.append(html);
+                                //     // html = "<div id="+friend[0]+"message_container></div>";
+                                //     // $('.private-messages').append(html);
+                                // }
                             }
                         }
                     }
@@ -242,22 +289,27 @@
             var fn = null;
             function showGroupCreator(){
                 viewGroupModel();
-                viewGroupModel();
                 var gCreatorContainer = $('.group-creator-container');
                 gCreatorContainer.css("display", "block");
                 var gMembers = $('#group-members-list');
                 var messageList = $('.message-list');
                 var html = "<div class='checkbox-custom'><div class=''></div></div>";
-                var friendList = [];
                 gMembers[0].innerHTML = "";
-                for(var i =0; i< messageList.children().length; i++){
-                    friendList.push($($(messageList.children()[i]).children()[0]).clone()[0]);
+                if($(messageList).children().length>0){
+                    html = "<img src='' style='width: 90px; height: inherit;'><span style='font-size: 25px;margin-left: 20px;'>Avinash</span>" +
+                        "<div style='position: relative;display: inline-block;width: 30px;height: 30px;margin-left: 80px;border-color: white;border: 1px solid white;'>" +
+                        "<div style='width: 18px;align-self: center;height: 18px;background: white;margin: 5px 0px 0px 5px;'></div></div>";
+                    debugger;
                 }
-                fn = friendList;
-                for(var i = 0; i < friendList.length; i++) {
-                    $(friendList[i]).attr("onclick", "check(this)").attr("user-checked","0").append(html);
-                    gMembers.append(friendList[i].outerHTML);
-                }
+                // for(var i =0; i< messageList.children().length; i++){
+                //     friendList.push($($(messageList.children()[i]).children()[0]).clone()[0]);
+                // }
+                // fn = friendList[0];
+                // for(var i = 0; i < friendList.length; i++) {
+                //     $(fn[0]).attr("onclick", "check(this)").attr("user-checked","0").append(html);
+                //     debugger;
+                //     gMembers.append(friendList[i].outerHTML);
+                // }
                 return true;
             }
             function stop(){

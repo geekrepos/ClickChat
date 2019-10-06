@@ -36,7 +36,9 @@ else{
         if(isset($_GET['friendID']) && isset($_GET['messageAfter'])){
             $friendID = $_GET['friendID'];
             $messageFlag = $_GET['messageAfter'];
+            $messageFlag = $messageFlag=='undefined'?0:$messageFlag;
             $query = "SELECT MessageID, SenderID, Message FROM `message_store` WHERE SenderID = '$userid' AND ReceiverID = '$friendID' OR SenderID = '$friendID' AND ReceiverID = '$userid' HAVING MessageID > $messageFlag";
+            //echo $query;
             $result = $db->query($query);
             $message = null;
             while($row = $result->fetch_assoc()){
@@ -47,7 +49,11 @@ else{
                     $message .= $row['MessageID'] . "/&DIFF&/" . $row['Message'] . "/&DIFF&/"."sen"."/&MSG&/";
                 }
             }
-            echo $message;
+            $qry =  "SELECT lastUpdatedTime FROM user_info WHERE userid = '$friendID'";
+            $result = $db->query($qry);
+            $response['lastLogin']  =   $result?$result->fetch_row()[0]:null;
+            $response['message']    =   $message;
+            echo json_encode($response);
         }
     }
 }
