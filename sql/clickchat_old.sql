@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 06, 2019 at 09:02 PM
+-- Generation Time: Oct 05, 2019 at 05:48 AM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.3.0
 
@@ -21,6 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `clickchat`
 --
+CREATE DATABASE IF NOT EXISTS `clickchat` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `clickchat`;
 
 -- --------------------------------------------------------
 
@@ -33,16 +35,6 @@ CREATE TABLE `friends_info` (
   `UserID` varchar(50) NOT NULL,
   `FriendID` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `friends_info`
---
-
-INSERT INTO `friends_info` (`F_ID`, `UserID`, `FriendID`) VALUES
-(1, 'avi', 'avidas'),
-(2, 'avidas', 'avi'),
-(3, 'ranjeet', 'avi'),
-(4, 'avi', 'ranjeet');
 
 -- --------------------------------------------------------
 
@@ -57,23 +49,6 @@ CREATE TABLE `message_store` (
   `Message` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `message_store`
---
-
-INSERT INTO `message_store` (`MessageID`, `SenderID`, `ReceiverID`, `Message`) VALUES
-(1, 'ranjeet', 'avi', 'gdfsg'),
-(2, 'ranjeet', 'avi', 'sdfgsdfg'),
-(3, 'ranjeet', 'avi', 'sdfg'),
-(4, 'ranjeet', 'avi', 'sdfg'),
-(5, 'ranjeet', 'avi', 'sdf'),
-(6, 'ranjeet', 'avi', 'gs'),
-(7, 'ranjeet', 'avi', 'fgsd'),
-(8, 'ranjeet', 'avi', ''),
-(9, 'avi', 'ranjeet', 'hello'),
-(10, 'ranjeet', 'avi', 'heelo bro'),
-(11, 'avi', 'ranjeet', 'ds');
-
 -- --------------------------------------------------------
 
 --
@@ -86,7 +61,6 @@ CREATE TABLE `user_info` (
   `userid` varchar(50) NOT NULL,
   `password` varchar(50) NOT NULL,
   `online` int(11) NOT NULL,
-  `lastUpdatedTime` datetime NOT NULL,
   `randomuserid` int(11) NOT NULL,
   `photo_path` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -95,9 +69,9 @@ CREATE TABLE `user_info` (
 -- Dumping data for table `user_info`
 --
 
-INSERT INTO `user_info` (`ID`, `username`, `userid`, `password`, `online`, `lastUpdatedTime`, `randomuserid`, `photo_path`) VALUES
-(23, 'ranjeet', 'ranjeet', '123', 0, '2019-10-07 00:31:44', 0, 'ranjeet.Capture.PNG'),
-(24, 'Avinash', 'avi', '123', 0, '2019-10-07 00:22:22', 0, 'avi.004.jpg');
+INSERT INTO `user_info` (`ID`, `username`, `userid`, `password`, `online`, `randomuserid`, `photo_path`) VALUES
+(21, 'Avinash', 'avi', '123', 0, 0, 'avi.004.jpg'),
+(22, 'Avinashdsda', 'avidas', '123', 0, 0, 'avidas.004.jpg');
 
 --
 -- Indexes for dumped tables
@@ -129,19 +103,20 @@ ALTER TABLE `user_info`
 -- AUTO_INCREMENT for table `friends_info`
 --
 ALTER TABLE `friends_info`
-  MODIFY `F_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `F_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `message_store`
 --
 ALTER TABLE `message_store`
-  MODIFY `MessageID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `MessageID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user_info`
 --
 ALTER TABLE `user_info`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
